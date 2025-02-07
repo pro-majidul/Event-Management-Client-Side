@@ -1,10 +1,17 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png'
+import useAuth from '../hooks/useAuth';
 const Navbar = () => {
+    const { user, userLogOut } = useAuth();
+    console.log(user, 'user is')
+    const handelLogOut = async () => {
+        await userLogOut()
+
+    }
     return (
         <section className='bg-base-100 shadow-sm py-2'>
-            <div className="navbar max-w-7xl mx-auto w-full px-12">
+            <div className="navbar max-w-7xl mx-auto w-full md:px-12">
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -12,10 +19,16 @@ const Navbar = () => {
                         </div>
                         <ul
                             tabIndex={0}
-                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                            <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Home</NavLink></li>
-                            <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Login</NavLink></li>
-                            <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Logout</NavLink></li>
+                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                            <li>
+                                <NavLink
+                                    className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                                    to="/"
+                                >
+                                    Home
+                                </NavLink>
+                            </li>
+
                         </ul>
                     </div>
                     <div>
@@ -26,13 +39,35 @@ const Navbar = () => {
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
-                    <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Home</NavLink></li>
-                            <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Login</NavLink></li>
-                            <li><NavLink className={(isActive) => isActive ? 'text-green-500 text-lg' : 'text-lg'}>Logout</NavLink></li>
+                        <li>
+                            <NavLink
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                                to="/"
+                            >
+                                Home
+                            </NavLink>
+                        </li>
+
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <a className="btn">Button</a>
+                    <ul>
+                        {!user && <li>
+                            <NavLink
+                                to='/login'
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                            >
+                                Login
+                            </NavLink>
+                        </li>}
+                        {user && <li>
+                            <button
+                                onClick={handelLogOut}
+                                className='text-lg text-black hover:text-green-500'
+                            >
+                                Logout
+                            </button></li>}
+                    </ul>
                 </div>
             </div>
         </section>
