@@ -4,10 +4,14 @@ import Lottie from "lottie-react";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
 const Login = () => {
-    const { user, setUser, googleLogin } = useAuth()
-    const { register, handleSubmit } = useForm()
-    const onSubmit = (data) => {
-        console.log(data.Username, 'username ', data.password, ' user password')
+    const { loginUser, setUser, googleLogin } = useAuth()
+    const { register, handleSubmit, formState: { errors }, } = useForm()
+    const onSubmit = async (data) => {
+        console.log(data.username, 'username ', data.password, ' user password')
+        const result = await loginUser(data.Username, data.password)
+        console.log(data)
+        setUser(result.user)
+
 
     }
 
@@ -30,22 +34,24 @@ const Login = () => {
                     <div className="space-y-1 text-sm">
                         <label htmlFor="username" className="block dark:text-gray-600">Username</label>
                         <input
-                            {...register("Username")}
+                            {...register("username", { required: true })}
                             type="text"
                             name="username"
                             id="username"
                             placeholder="Username"
                             className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600" />
+                        {errors.username && <span className='text-red-500'>This field is required</span>}
                     </div>
                     <div className="space-y-1 text-sm">
                         <label htmlFor="password" className="block dark:text-gray-600">Password</label>
                         <input
-                            {...register("password")}
+                            {...register("password", { required: true })}
                             type="password"
                             name="password"
                             id="password"
                             placeholder="Password"
                             className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600" />
+                        {errors.password && <span className='text-red-500'>This field is required</span>}
                     </div>
                     <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">Sign in</button>
                 </form>
@@ -65,7 +71,7 @@ const Login = () => {
 
                 </div>
                 <p className="text-xs text-center sm:px-6 dark:text-gray-600">Don't have an account?
-                    <Link to='/signup' className="underline dark:text-gray-800">Sign up</Link>
+                    <Link to='/signup' className="hover:underline dark:text-violet-600">Sign up</Link>
                 </p>
             </div>
         </div>
