@@ -3,8 +3,8 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png'
 import useAuth from '../hooks/useAuth';
 const Navbar = () => {
-    const { user, userLogOut ,isGuest, setIsGuest} = useAuth();
-    
+    const { user, userLogOut, isGuest, setIsGuest } = useAuth();
+
     const navigate = useNavigate()
     console.log(user, 'user is')
     useEffect(() => {
@@ -19,8 +19,8 @@ const Navbar = () => {
         navigate('/login')
     }
     return (
-        <section className='bg-base-100 shadow-sm py-2'>
-            <div className="navbar max-w-7xl mx-auto w-full md:px-12">
+        <section className=' bg-base-100 fixed top-0 w-full z-50 shadow-sm py-2'>
+            <div className="navbar max-w-7xl  mx-auto w-full md:px-12">
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -31,12 +31,28 @@ const Navbar = () => {
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                             <li>
                                 <NavLink
-                                    className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                                    className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
                                     to="/"
                                 >
                                     Home
                                 </NavLink>
                             </li>
+                            {user || isGuest && <li>
+                                <NavLink
+                                    to='/create'
+                                    className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
+                                >
+                                    Create Event
+                                </NavLink>
+                            </li>}
+                            {user || isGuest && <li>
+                                <NavLink
+                                    to='/my-events'
+                                    className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
+                                >
+                                    My Events
+                                </NavLink>
+                            </li>}
 
                         </ul>
                     </div>
@@ -50,12 +66,28 @@ const Navbar = () => {
                     <ul className="menu menu-horizontal px-1">
                         <li>
                             <NavLink
-                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
                                 to="/"
                             >
                                 Home
                             </NavLink>
                         </li>
+                        {user || isGuest && <li>
+                            <NavLink
+                                to='/create'
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
+                            >
+                                Create Event
+                            </NavLink>
+                        </li>}
+                        {user || isGuest && <li>
+                            <NavLink
+                                to='/my-events'
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
+                            >
+                                My Events
+                            </NavLink>
+                        </li>}
 
                     </ul>
                 </div>
@@ -64,7 +96,7 @@ const Navbar = () => {
                         {!user && !isGuest && <li>
                             <NavLink
                                 to='/login'
-                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
+                                className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
                             >
                                 Login
                             </NavLink>
@@ -72,7 +104,7 @@ const Navbar = () => {
                         {(user || isGuest) && <li>
                             <button
                                 onClick={handelLogOut}
-                                className='text-lg text-black hover:text-green-500'
+                                className='text-lg text-white hover:text-green-500'
                             >
                                 Logout
                             </button></li>}
