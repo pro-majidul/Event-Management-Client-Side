@@ -1,12 +1,15 @@
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
+import usePrivate from "../hooks/usePrivate";
 
 const CreateEvent = () => {
     const { register, handleSubmit, formState: { errors }, } = useForm();
+    const privateAxios = usePrivate();
+
     const onSubmit = (data) => {
         console.log("Event Data:", data);
+        
     };
-
 
     return (
 
@@ -60,8 +63,8 @@ const CreateEvent = () => {
                 <div className="relative">
                     <label className="block  font-medium mt-4">Select Category </label>
                     <select
-                    {...register("category", { required: "Event category is required" })}
-                    defaultValue='Select A Category'
+                        {...register("category", { required: "Event category is required" })}
+                        defaultValue='Select A Category'
                         className="block appearance-none w-full py-2 px-4 border mt-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 bg-base-300 focus:ring-blue-500"
                     >
                         <option disabled value=" ">Select A Category</option>
