@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AnimationImage from '../assets/Animation - 1738954441745.json'
 import Lottie from "lottie-react";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
 import usePublic from "../hooks/usePublic";
+import { FcGoogle } from "react-icons/fc";
 import Swal from "sweetalert2";
 const Login = () => {
-    const { loginUser, setUser, googleLogin } = useAuth()
+    const { loginUser, setUser, googleLogin, setIsGuest } = useAuth()
+    const navigate = useNavigate()
     const publicAxios = usePublic()
     const { register, handleSubmit, formState: { errors }, } = useForm()
     const onSubmit = async (data) => {
@@ -14,7 +16,8 @@ const Login = () => {
         try {
             const result = await loginUser(data.username, data.password)
             console.log(data)
-            setUser(result.user)
+            setUser(result.user);
+            navigate('/')
             Swal.fire({
                 position: "top-end",
                 icon: "success",
@@ -59,6 +62,7 @@ const Login = () => {
                     showConfirmButton: false,
                     timer: 1500
                 });
+                navigate('/')
             }
         } catch (err) {
             console.log(err)
@@ -72,6 +76,14 @@ const Login = () => {
         }
 
     }
+    const handleGuestLogin = async () => {
+        const response = await publicAxios.post('/guest-login');
+        setIsGuest(true)
+        console.log(response.data.token)
+        localStorage.setItem('guestToken', response.data.token);
+        navigate('/')
+    };
+
     return (
 
         <div className="md:flex items-center justify-center max-w-7xl w-full mx-auto py-10 md:px-12">
@@ -105,8 +117,12 @@ const Login = () => {
                             className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600" />
                         {errors.password && <span className='text-red-500'>This field is required</span>}
                     </div>
-                    <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">Sign in</button>
+                    <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 hover:bg-violet-400 dark:bg-violet-600">Login</button>
                 </form>
+                <div className="flex items-center justify-center py-3">
+                    <button className="btn bg-violet-600 text-white hover:bg-violet-400" onClick={handleGuestLogin}>Guest Login</button>
+
+                </div>
                 <div className="flex items-center pt-4 space-x-1">
                     <div className="flex-1 h-px sm:w-16 dark:bg-gray-300"></div>
                     <p className="px-3 text-sm dark:text-gray-600">Login with social accounts</p>
@@ -116,9 +132,7 @@ const Login = () => {
                     <button
                         onClick={handelGoogleLogin}
                         aria-label="Log in with Google" className="p-3 rounded-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-5 h-5 fill-current">
-                            <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
-                        </svg>
+                        <FcGoogle className="text-3xl hover:bg-violet-200 " />
                     </button>
 
                 </div>

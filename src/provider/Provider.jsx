@@ -4,6 +4,7 @@ import { auth } from '../firebase.config';
 export const AuthContext = createContext()
 const Provider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [isGuest, setIsGuest] = useState(false);
     const [loading, setLoading] = useState(false)
     const createUser = (email, password) => {
         setLoading(true)
@@ -39,7 +40,8 @@ const Provider = ({ children }) => {
         googleLogin,
         loginUser,
         updateUserProfile,
-        userLogOut
+        userLogOut,
+        isGuest, setIsGuest
     }
 
     useEffect(() => {

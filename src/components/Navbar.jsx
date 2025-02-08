@@ -1,13 +1,22 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png'
 import useAuth from '../hooks/useAuth';
 const Navbar = () => {
-    const { user, userLogOut } = useAuth();
+    const { user, userLogOut ,isGuest, setIsGuest} = useAuth();
+    
+    const navigate = useNavigate()
     console.log(user, 'user is')
+    useEffect(() => {
+        const guestToken = localStorage.getItem('guestToken');
+        setIsGuest(!!guestToken);
+    }, [])
+
     const handelLogOut = async () => {
         await userLogOut()
-
+        localStorage.removeItem('guestToken');
+        setIsGuest(false);
+        navigate('/login')
     }
     return (
         <section className='bg-base-100 shadow-sm py-2'>
@@ -15,7 +24,7 @@ const Navbar = () => {
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path    strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
                         </div>
                         <ul
                             tabIndex={0}
@@ -52,7 +61,7 @@ const Navbar = () => {
                 </div>
                 <div className="navbar-end">
                     <ul>
-                        {!user && <li>
+                        {!user && !isGuest && <li>
                             <NavLink
                                 to='/login'
                                 className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-black'}
@@ -60,7 +69,7 @@ const Navbar = () => {
                                 Login
                             </NavLink>
                         </li>}
-                        {user && <li>
+                        {(user || isGuest) && <li>
                             <button
                                 onClick={handelLogOut}
                                 className='text-lg text-black hover:text-green-500'
