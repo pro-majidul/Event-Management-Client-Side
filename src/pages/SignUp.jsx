@@ -32,6 +32,7 @@ const SignUp = () => {
             const result = await createUser(data.email, data.password)
             await updateUserProfile(data.name, response.data.url)
             console.log(result.user, 'create user')
+            setUser(result.user)
             const userInfo = {
                 email: data.email,
                 name: data.name,

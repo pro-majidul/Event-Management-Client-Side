@@ -3,22 +3,74 @@ import AnimationImage from '../assets/Animation - 1738954441745.json'
 import Lottie from "lottie-react";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
+import usePublic from "../hooks/usePublic";
+import Swal from "sweetalert2";
 const Login = () => {
     const { loginUser, setUser, googleLogin } = useAuth()
+    const publicAxios = usePublic()
     const { register, handleSubmit, formState: { errors }, } = useForm()
     const onSubmit = async (data) => {
         console.log(data.username, 'username ', data.password, ' user password')
-        const result = await loginUser(data.Username, data.password)
-        console.log(data)
-        setUser(result.user)
+        try {
+            const result = await loginUser(data.username, data.password)
+            console.log(data)
+            setUser(result.user)
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "User Login SuccessFull",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+        } catch (err) {
+            console.log(err)
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: `${err.code}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
 
 
     }
 
     const handelGoogleLogin = async () => {
 
-        const data = await googleLogin()
-        console.log(data.user)
+        try {
+            const data = await googleLogin()
+            console.log(data.user)
+            setUser(data.user)
+            const userInfo = {
+                email: data.user.email,
+                name: data.user.displayName,
+                photo: data.user.photoURL,
+                loginDate: new Date()
+            }
+            const result = await publicAxios.put('/users', userInfo);
+            console.log(result.data)
+            if (result.data.modifiedCount > 0) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "User Login SuccessFull",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        } catch (err) {
+            console.log(err)
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: `${err.code}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
     }
     return (
 
