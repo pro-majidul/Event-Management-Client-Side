@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import usePublic from "../hooks/usePublic";
+import Swal from "sweetalert2";
+import SignUpImage from '../assets/SignUp.json'
+import Lottie from "lottie-react";
 
 const SignUp = () => {
     const { updateUserProfile, createUser, setUser } = useAuth()
@@ -10,6 +14,7 @@ const SignUp = () => {
     const [uploadfile, setUploadfile] = useState('');
     const [files, setFiles] = useState(null)
     const [uploading, setUploading] = useState(false)
+    const publicAxios = usePublic()
     const handelfileChange = e => {
         setFiles(e.target.files[0])
     }
@@ -27,13 +32,33 @@ const SignUp = () => {
             const result = await createUser(data.email, data.password)
             await updateUserProfile(data.name, response.data.url)
             console.log(result.user, 'create user')
-            const userInfo ={
-                email : data.email,
+            const userInfo = {
+                email: data.email,
+                name: data.name,
+                photo: response.data.url,
+            }
+            const user = await publicAxios.post('/users', userInfo);
+            console.log(user.data, ' database er user')
+            if (user.data.insertedId) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "User Create Successfull",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
             setUploading(false)
 
         } catch (error) {
             console.log(error)
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: `${error.code}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
             setUploading(false)
         }
 
@@ -42,7 +67,7 @@ const SignUp = () => {
     return (
         <section className="md:flex items-center justify-center md:px-12 py-10">
             <div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum voluptatibus vero ea aut? Voluptates asperiores ducimus voluptate aliquid laborum, placeat, beatae rerum nulla itaque aut numquam at aspernatur! Voluptatem, neque!</p>
+                <Lottie animationData={SignUpImage} />
             </div>
             <div className="flex flex-col w-full max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-50 dark:text-gray-800">
                 <div className="mb-8 text-center">
