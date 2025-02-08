@@ -1,11 +1,44 @@
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
+    const { updateUserProfile, createUser, setUser } = useAuth()
     const { register, handleSubmit, formState: { errors }, } = useForm()
-    const handelSignUp = async (data) => {
-        console.log(data)
+    const [uploadfile, setUploadfile] = useState('');
+    const [files, setFiles] = useState(null)
+    const [uploading, setUploading] = useState(false)
+    const handelfileChange = e => {
+        setFiles(e.target.files[0])
     }
+
+    const handelSignUp = async (data) => {
+        if (!files) return
+        const formdata = new FormData();
+        formdata.append('file', files)
+        formdata.append('upload_preset', 'Event-management')
+        setUploading(true)
+        try {
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/dyqlswfe4/image/upload`, formdata)
+            setUploadfile(response.data.url)
+
+            const result = await createUser(data.email, data.password)
+            await updateUserProfile(data.name, response.data.url)
+            console.log(result.user, 'create user')
+            const userInfo ={
+                email : data.email,
+            }
+            setUploading(false)
+
+        } catch (error) {
+            console.log(error)
+            setUploading(false)
+        }
+
+    }
+    console.log(uploadfile)
     return (
         <section className="md:flex items-center justify-center md:px-12 py-10">
             <div>
@@ -45,30 +78,38 @@ const SignUp = () => {
                         <div className="space-y-1 text-sm">
                             <label htmlFor="password" className="block dark:text-gray-600">Password</label>
                             <input
-                                {...register("password", { required: true })}
+                                {...register("password", {
+                                    required: "This field is required",
+                                    pattern: {
+                                        value: /^(?=.*[a-z])(?=.*\d).{7,}$/,
+                                        message: "Must be at least 7 characters & include 1 lowercase and 1 number",
+                                    },
+                                })}
                                 type="password"
                                 name="password"
                                 id="password"
                                 placeholder="Password"
                                 className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600" />
-                            {errors.password && <span className='text-red-500'>This field is required</span>}
+                            {errors.password && <span className="text-red-500">{errors.password.message}</span>}
                         </div>
                         <fieldset className="w-full space-y-1 dark:text-gray-800">
                             <label htmlFor="files" className="block text-sm font-medium">Select a Photo</label>
                             <div className="flex">
                                 <input
-                                    {...register("files", { required: true })}
+                                    onChange={handelfileChange}
+                                    required
                                     type="file"
                                     name="files"
                                     id="files"
                                     className="w-full px-3 py-2 border-2 border-dashed rounded-md dark:border-gray-300 dark:text-gray-600 dark:bg-gray-100" />
-                                {errors.files && <span className='text-red-500'>This field is required</span>}
+
                             </div>
+
                         </fieldset>
                     </div>
                     <div className="space-y-2">
                         <div>
-                            <button type="submit" className="w-full px-8 py-3 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">Sign Up</button>
+                            <button type="submit" className="w-full px-8 py-3 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">{uploading ? 'Signing' : 'Sign Up'}</button>
                         </div>
                         <p className="px-6 text-sm text-center dark:text-gray-600">Already have an Account?
                             <Link to='/login' className="hover:underline dark:text-violet-600">Login</Link>.
