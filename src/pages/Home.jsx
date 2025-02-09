@@ -10,7 +10,7 @@ const events = [
     { id: 4, name: "Art Exhibition", date: "2024-11-20", category: "Art", status: "Past" },
 ];
 
-export default function Home() {
+const Home = () => {
     const [filter, setFilter] = useState("All");
     const [dateFilter, setDateFilter] = useState("All");
 
@@ -75,3 +75,4 @@ export default function Home() {
 
     );
 }
+export default Home;

@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import AnimationImage from "../assets/Animation - 1738954441745.json";
 import Lottie from "lottie-react";

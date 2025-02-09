@@ -37,7 +37,7 @@ const Navbar = () => {
                                     Home
                                 </NavLink>
                             </li>
-                            {user || isGuest && <li>
+                            {(user || isGuest) && <li>
                                 <NavLink
                                     to='/create'
                                     className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
@@ -45,7 +45,7 @@ const Navbar = () => {
                                     Create Event
                                 </NavLink>
                             </li>}
-                            {user || isGuest && <li>
+                            {(user || isGuest) && <li>
                                 <NavLink
                                     to='/my-events'
                                     className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
@@ -72,7 +72,7 @@ const Navbar = () => {
                                 Home
                             </NavLink>
                         </li>
-                        {user || isGuest && <li>
+                        {(user || isGuest) && <li>
                             <NavLink
                                 to='/create'
                                 className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}
@@ -80,7 +80,7 @@ const Navbar = () => {
                                 Create Event
                             </NavLink>
                         </li>}
-                        {user || isGuest && <li>
+                        {(user || isGuest) && <li>
                             <NavLink
                                 to='/my-events'
                                 className={({ isActive }) => isActive ? 'text-green-500 text-lg' : 'text-lg text-white'}

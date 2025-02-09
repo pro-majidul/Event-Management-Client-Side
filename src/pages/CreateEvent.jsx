@@ -1,13 +1,19 @@
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import usePrivate from "../hooks/usePrivate";
+import useAuth from "../hooks/useAuth";
 
 const CreateEvent = () => {
+    const {user}= useAuth()
     const { register, handleSubmit, formState: { errors }, } = useForm();
     const privateAxios = usePrivate();
 
     const onSubmit = (data) => {
         console.log("Event Data:", data);
+        const info ={
+            email : user?.email || 'guest@gmail.com'
+        }
+
         
     };
 

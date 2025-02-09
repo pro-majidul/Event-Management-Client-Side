@@ -34,7 +34,6 @@ const Provider = ({ children }) => {
     }
 
     const info = {
-        name: 'majidul',
         user,
         setUser,
         loading,
@@ -48,12 +47,12 @@ const Provider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser.email) {
+            if (currentUser?.email) {
                 setUser(currentUser)
                 publicAxios.post('/jwt', { email: currentUser.email })
                     .then(res => {
                         if (res.data.token) {
-                            localStorage.setItem('guestToken' , res.data.token)
+                            localStorage.setItem('guestToken', res.data.token)
                             setLoading(false)
                         }
                     })
