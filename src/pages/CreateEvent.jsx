@@ -2,19 +2,48 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import usePrivate from "../hooks/usePrivate";
 import useAuth from "../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const CreateEvent = () => {
-    const {user}= useAuth()
-    const { register, handleSubmit, formState: { errors }, } = useForm();
+    const { user } = useAuth()
+    const { register, handleSubmit, formState: { errors },reset } = useForm();
     const privateAxios = usePrivate();
 
-    const onSubmit = (data) => {
-        console.log("Event Data:", data);
-        const info ={
-            email : user?.email || 'guest@gmail.com'
+    const onSubmit = async (data) => {
+        // console.log("Event Data:", data);
+        const info = {
+            email: user?.email || 'guest@gmail.com',
+            eventName: data.eventName,
+            description: data.description,
+            eventDate: data.eventDate,
+            eventTime: data.eventTime,
+            category: data.category,
         }
 
-        
+        try {
+            const response = await privateAxios.post('/events', info)
+            if (response.data.insertedId) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Event Create Successful",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                reset()
+            }
+        } catch (err) {
+            console.log(err)
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: `${err?.response?.data?.message || err?.message}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+
     };
 
     return (
