@@ -17,8 +17,9 @@ const MyEvent = () => {
         enabled: !!user
     })
     console.log(events)
+
     return (
-        <div>
+        <div className='md:mt-36 mt-32 w-full max-w-7xl mx-auto px-12'>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -27,8 +28,11 @@ const MyEvent = () => {
             >
                 {events && events.map(event => (
                     <div key={event.id} className="bg-base-300 p-4 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold">{event.name}</h2>
-                        <p className="text-gray-600">{event.date}</p>
+                        <h2 className="text-xl font-semibold">{event.eventName}</h2>
+                        <div className='flex items-center justify-between'>
+                        <p className="text-gray-600">{event.eventDate}</p>
+                        <p className="text-gray-600">{event.eventTime}</p>
+                        </div>
                         <p className="text-sm text-blue-600">{event.category}</p>
                         <div className="mt-4">
                             <button
